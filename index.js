@@ -51,7 +51,12 @@ const processData = () => {
   const paymentDateTime = getRandomDate(jsonData["paymentDateTime"].smallest, jsonData["paymentDateTime"].largest);
   inputData = { ...Object.assign({ "PAYMENT_DATETIME": paymentDateTime }, inputData) };
 
-  const whereClause = Object.keys(inputData).sort().map((key) => {
+  const inputData2 = {
+    TRANSACTION_TYPE: jsonData["transactionType"][Math.floor(Math.random() * [jsonData["transactionType"].length])],
+    INSTRUMENT_TYPE: jsonData["instrumentType"][Math.floor(Math.random() * [jsonData["instrumentType"].length])],
+  }
+
+  let whereClause = Object.keys(inputData).sort().map((key) => {
     if (key === "RESPONSE_CODE") {
       return `AND (${key} = ${inputData[key]} OR`;
     }
@@ -59,11 +64,19 @@ const processData = () => {
       return `PAYMENT_DATETIME BETWEEN TO_DATE('${inputData[key]} 00:00:00','YYYY-MM-DD HH24:MI:SS') AND TO_DATE('${inputData[key]} 23:59:59','YYYY-MM-DD HH24:MI:SS')`;
     }
     else if (key === "STAGE4_STATUS") {
-      return `${key} ${inputData[key]})`;
+      return `${key} ${inputData[key]}`;
     }
   }).join(' ');
 
+  const whereClause2 = Object.keys(inputData2).sort().map((key) => {
+    return `${key} = '${inputData2[key]}'`;
+  }).join(' AND ');
+
+  whereClause = `${whereClause} AND ${whereClause2})`
+
+
   const sql = `DELETE FROM IRIS_CUSTOM.ODS_TRANSACTION_LOG WHERE ${whereClause}`;
+  // const sql = `SELECT * FROM IRIS_CUSTOM.ODS_TRANSACTION_LOG WHERE ${whereClause}`;
 
   return dbInstance.execute(sql, {}, {
     outFormat: oracledb.OBJECT,
