@@ -1,0 +1,7 @@
+{
+  "dependencies": {
+    "@faker-js/faker": "^8.3.1",
+    "dotenv": "^16.3.1",
+    "oracledb": "^6.2.0"
+  }
+}
