@@ -77,6 +77,7 @@ const processData = () => {
 
   const sql = `DELETE FROM IRIS_CUSTOM.ODS_TRANSACTION_LOG WHERE ${whereClause}`;
   // const sql = `SELECT * FROM IRIS_CUSTOM.ODS_TRANSACTION_LOG WHERE ${whereClause}`;
+  console.log("QUERY =====", sql, " ====")
 
   return dbInstance.execute(sql, {}, {
     outFormat: oracledb.OBJECT,
